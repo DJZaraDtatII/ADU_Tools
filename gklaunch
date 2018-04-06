@@ -1,0 +1,133 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------------------------------------
+# Credit to: xpirt for sdat2img.py - dan semua yang berkontribusi 
+#------------------------------------------------------------------------------------------------------
+# Provided by: rendiix
+
+bnr() {
+	echo ""
+	echo "------------------------------------------------------"
+	echo "            Android DAT Unpacker Toool                "
+	echo "                  by Gunkid Dev                       "
+	echo "------------------------------------------------------"
+}
+brs() {
+    echo ""
+    echo ""
+	echo "------------------------------------------------------"
+}
+info() {
+echo -e "Device info";
+echo -e "";
+echo -e "  Model         : $brand - $model";
+echo -e "  Versi Android : $verand";
+echo -e "  Memori tersisa: $mem";
+}
+
+jda() {
+brs;
+read -s -n 1 -p "Tekan ENTER untuk melanjutkan...";
+}
+
+winput() {
+echo "Masukan salah, coba lagi"
+jda;
+main;
+}
+miss() {
+echo -e "File yg dibutuhkan tidak lengkap..."
+jda;
+main;
+}
+udone() {
+echo -e "Unpack selesai..."
+jda;
+main;
+}
+
+quit() {
+exit
+}
+
+cl() {
+clear
+}
+
+unpack() {
+if [[ -e $sdat && -e $tfrl ]]; then
+    cl;
+    bnr;
+    info;
+    brs;
+    echo -e  "Sedang memproses..."
+    brs;
+    $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unlack_log.txt
+    udone;
+else
+    miss;
+fi
+}
+
+main() {
+cl
+bnr
+info;
+brs;
+echo -e "";
+echo -e "Menu:";
+echo -e "";
+echo -e "  1. Bongkar DAT  ";
+echo -e "  2. Repack DAT (comming soon)";
+echo -e "  3. Keluar";
+brs
+printf %s "Pilih menu kemudian tekan ENTER: ";
+read env;
+case $env in
+ 1|1) unpack;;
+ 2|2) repack;;
+ 3|3) quit;;
+ *) winput;;
+esac
+}
+
+root=$(pwd)
+build="/system/build.prop"
+model="$(cat $build | grep "ro.product.model" | cut -d"=" -f 2)"
+brand="$(cat $build | grep "ro.product.brand" | cut -d"=" -f 2)"
+verand="$(cat $build | grep "ro.build.version.release" | cut -d"=" -f 2)"
+mem="$(df -h | grep "/data" | tr -s " " | cut -d" " -f 4)"
+mem2="$(df | grep "/data" | tr -s " " | cut -d" " -f 4)"
+target="/sdcard/ADU_Tools"
+d2img="$root/sdat2img.py"
+sdat="$target/system.new.dat"
+tfrl="$target/system.transfer.list"
+logs="$target/logs"
+envj() {
+    bnr;
+    echo -e "Memeriksa tools... hanya saat pertama kali menggunakan tools ini"
+    brs;
+    chk="$(pkg list-installed python | grep "installed" | cut -d" " -f4)"
+   if [ "$chk" = "" ]; then
+         bnr;
+         echo -e "Python tidak terinstall diperangkat anda"
+         brs;
+         echo -e "Memasang Python..."
+         pkg install java
+         main;
+         else
+         bnr;
+         echo -e "Python: OK!"
+         brs;
+         main;
+   fi
+}
+if [ -d $target ]; then
+    main;
+else
+    mkdir $target
+    mkdir $target/logs
+    envj;
+    main;
+fi
+    
