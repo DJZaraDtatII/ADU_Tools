@@ -5,50 +5,84 @@
 #------------------------------------------------------------------------------------------------------
 # Provided by: rendiix
 
+me="\e[38;5;196m"
+hi="\e[38;5;82m"
+ku="\e[38;5;226m"
+bi="\e[38;5;21m"
+tbl="\e[1m"
+dim="\e[2m"
+no="\e[0m"
 bnr() {
-	echo ""
-	echo "------------------------------------------------------"
-	echo "            Android DAT Unpacker Toool                "
-	echo "                  by Gunkid Dev                       "
-	echo "------------------------------------------------------"
+	echo -e ""
+	echo -e "------------------------------------------------------"
+	echo -e "            ${hi}${tbl}Android DAT Unpacker Tool${no}                "
+	echo -e "                  ${ku}by Gunkid Dev${no}                       "
+	echo -e "------------------------------------------------------"
 }
 brs() {
-    echo ""
-	echo "------------------------------------------------------"
-	echo ""
+    echo -e ""
+	echo -e "------------------------------------------------------"
+	echo -e ""
 }
 info() {
-echo -e "Device info";
 echo -e "";
-echo -e "  Model         : $brand - $model";
-echo -e "  Versi Android : $verand";
-echo -e "  Memori tersisa: $mem";
+echo -e "${tbl}Device info:${no}";
+echo -e "";
+echo -e "  Model         : ${hi}$brand - $model${no}";
+echo -e "  Versi Android : ${hi}$verand${no}";
+echo -e "  Memori tersisa: ${hi}$mem${no}";
 }
 jda() {
 brs;
-read -s -n 1 -p "Tekan ENTER untuk melanjutkan...";
+read -s -n 1 -p "Kembali ke menu utama..."
+}
+csoon() {
+cl;
+bnr;
+info;
+brs;
+echo -e "${hi}Fiture akan ditambahkan, dev lagi bertapa nyari materi";
+echo -e "Bagi yang ingin ikut berkontribusi silahkan kontak saya di:";
+echo -e " • Email   : vanzdobz@gmail.com";
+echo -e " • Phone   : +62812 **** ****";
+echo -e " • Discord : -${no}";
+jda;
+main;
 }
 winput() {
 brs;
-echo "Masukan salah, coba lagi"
+echo -e "${me}Masukan salah, coba lagi${no}";
 jda;
 main;
 }
 memwarn() {
+cl;
+bnr;
+info;
 brs;
-echo "Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 6 GB"
+echo -e "${me}Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 6 GB${no}";
 jda;
 main;
 }
 miss() {
+cl;
+bnr;
+info;
 brs;
-echo "File yg dibutuhkan tidak lengkap..."
+echo -e "${me}File yg dibutuhkan tidak lengkap...${no}";
+echo -e "";
+echo -e "${ku}Pastikan sudah memasukkan file:${no}";
+echo -e "${tbl}system.new.dat${no} ${ku}dan${no} ${tbl}system.transfer.list${no}";
+echo -e "${ku}kedalam folder:${no} ${tbl}$target${no}"
 jda;
 main;
 }
 udone() {
+cl;
+bnr;
+info;
 brs;
-echo "Unpack selesai..."
+echo -e "${hi}Unpack selesai...${no}";
 jda;
 main;
 }
@@ -72,7 +106,7 @@ if [[ -e $sdat && -e $tfrl ]]; then
     bnr;
     info;
     brs;
-    echo -e  "Sedang memproses..."
+    echo -e  "${ku}Sedang memproses...${no}";
     brs;
     $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
     udone;
@@ -86,20 +120,22 @@ cl
 bnr
 info;
 brs;
-echo -e "";
-echo -e "Menu:";
+echo -e "${tbl}Menu:${no}";
 echo -e "";
 echo -e "  1. Bongkar DAT  ";
-echo -e "  2. Repack DAT (comming soon)";
-echo -e "  3. Keluar";
+echo -e "${dim}  2. Repack DAT (comming soon)${no}";
+echo -e "${dim}  3. ROM Tools (comming soon)${no}";
+echo -e "  4. Keluar";
 brs;
 printf %s "Pilih menu kemudian tekan ENTER: ";
+echo -e ""
 brs;
 read env;
 case $env in
  1|1) unpack;;
- 2|2) repack;;
- 3|3) quit;;
+ 2|2) csoon;;
+ 3|3) csoon;;
+ 4|4) quit;;
  *) winput;;
 esac
 }
@@ -118,19 +154,19 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
     bnr;
-    echo -e "Memeriksa tools... hanya saat pertama kali menggunakan tools ini"
+    echo -e "${ku}Memeriksa tools... hanya saat pertama kali menggunakan tools ini${no}"
     brs;
     chk="$(pkg list-installed python | grep "installed" | cut -d" " -f4)"
    if [ "$chk" = "" ]; then
          bnr;
-         echo -e "Python tidak terinstall diperangkat anda"
+         echo -e "${ku}Python tidak terinstall diperangkat anda${no}"
          brs;
-         echo -e "Memasang Python..."
+         echo -e "${ku}Memasang Python...${no}"
          pkg install java
          main;
          else
          bnr;
-         echo -e "Python: OK!"
+         echo -e "${hi}Python: OK!${no}"
          brs;
          main;
    fi
