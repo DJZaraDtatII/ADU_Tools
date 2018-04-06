@@ -14,8 +14,8 @@ bnr() {
 }
 brs() {
     echo ""
-    echo ""
 	echo "------------------------------------------------------"
+	echo ""
 }
 info() {
 echo -e "Device info";
@@ -29,21 +29,25 @@ brs;
 read -s -n 1 -p "Tekan ENTER untuk melanjutkan...";
 }
 winput() {
+brs;
 echo "Masukan salah, coba lagi"
 jda;
 main;
 }
 memwarn() {
+brs;
 echo "Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 6 GB"
 jda;
 main;
 }
 miss() {
+brs;
 echo "File yg dibutuhkan tidak lengkap..."
 jda;
 main;
 }
 udone() {
+brs;
 echo "Unpack selesai..."
 jda;
 main;
@@ -88,8 +92,9 @@ echo -e "";
 echo -e "  1. Bongkar DAT  ";
 echo -e "  2. Repack DAT (comming soon)";
 echo -e "  3. Keluar";
-brs
+brs;
 printf %s "Pilih menu kemudian tekan ENTER: ";
+brs;
 read env;
 case $env in
  1|1) unpack;;
@@ -138,4 +143,3 @@ else
     envj;
     main;
 fi
-    
