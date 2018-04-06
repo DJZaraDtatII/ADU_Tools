@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/system/bin/bash
 
 #------------------------------------------------------------------------------------------------------
 # Credit to: xpirt for sdat2img.py - dan semua yang berkontribusi 
@@ -24,37 +24,45 @@ echo -e "  Model         : $brand - $model";
 echo -e "  Versi Android : $verand";
 echo -e "  Memori tersisa: $mem";
 }
-
 jda() {
 brs;
 read -s -n 1 -p "Tekan ENTER untuk melanjutkan...";
 }
-
 winput() {
 echo "Masukan salah, coba lagi"
 jda;
 main;
 }
+memwarn() {
+echo "Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 6 GB"
+jda;
+main;
+}
 miss() {
-echo -e "File yg dibutuhkan tidak lengkap..."
+echo "File yg dibutuhkan tidak lengkap..."
 jda;
 main;
 }
 udone() {
-echo -e "Unpack selesai..."
+echo "Unpack selesai..."
 jda;
 main;
 }
-
 quit() {
 exit
 }
-
 cl() {
 clear
 }
-
 unpack() {
+if [ "$mem2" -lt "6800000" ]; then
+memwarn;
+else
+unpackmain;
+fi
+}
+
+unpackmain() {
 if [[ -e $sdat && -e $tfrl ]]; then
     cl;
     bnr;
@@ -62,7 +70,7 @@ if [[ -e $sdat && -e $tfrl ]]; then
     brs;
     echo -e  "Sedang memproses..."
     brs;
-    $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unlack_log.txt
+    $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
     udone;
 else
     miss;
