@@ -90,7 +90,7 @@ quit() {
 exit
 }
 cl() {
-clear
+echo -e "test"
 }
 unpack() {
 if [ "$mem2" -lt "5800000" ]; then
@@ -115,7 +115,7 @@ else
 fi
 }
 repack() {
-if [[ -e $fsys && -e $cntx ]]; then
+if [[ -e $fosys && -e $cntx ]]; then
     cl;
     bnr;
     info;
@@ -123,7 +123,22 @@ if [[ -e $fsys && -e $cntx ]]; then
     echo -e  "${ku}Sedang memproses...${no}";
     brs;
     read -p "Masukkan ukuran system (bit): " ukuran
-    $mext -T -0 -S $cntx -L system -l ${ukuran} -a system $target/new.system.img $fsys >>$logs/repack_log.txt
+    $mext -T -0 -S $cntx -l ${ukuran} -a system $target/raw.img $target/system/  >>$logs/repack_log.txt
+    $img2s $target/raw.img $target/sparse.img 4096 >>$logs/repack_log.txt
+    rm -r $target/raw.img
+    api="$(cat /sdcard/ADU_Tools/system/build.prop | grep "ro.build.version.sdk" | cut -d"=" -f 2)"
+    if [[ $api = "21" ]]; then
+			is="1"
+		elif [[ $api = "22" ]]; then
+			is="2"
+		elif [[ $api = "23" ]]; then
+			is="3"
+		elif [[ $api -ge "24" ]]; then
+			is="4"
+    fi
+    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output >>$logs/repack_log.txt
+    rm -r $target/sparse.img
+    main;
 else
     miss;
 fi
@@ -147,7 +162,7 @@ brs;
 read env;
 case $env in
  1|1) unpack;;
- 2|2) unpack;;
+ 2|2) repack;;
  3|3) csoon;;
  4|4) quit;;
  *) winput;;
@@ -155,17 +170,19 @@ esac
 }
 
 root=$(pwd)
+target="/sdcard/ADU_Tools"
+img2s="$root/tools/img2simg"
+img2d="$root/tools/img2sdat.py"
 mext="$root/tools/make_ext4fs"
-fsys="$target/system/"
+fosys="$target/system"
 cntx="$target/file_contexts.bin"
-outdat="/sdcard/ADU_Tools/output/"
+outdat="$target/output/"
 build="/system/build.prop"
 model="$(cat $build | grep "ro.product.model" | cut -d"=" -f 2)"
 brand="$(cat $build | grep "ro.product.brand" | cut -d"=" -f 2)"
 verand="$(cat $build | grep "ro.build.version.release" | cut -d"=" -f 2)"
 mem="$(df -h | grep "/data" | tr -s " " | cut -d" " -f 4)"
 mem2="$(df | grep "/data" | tr -s " " | cut -d" " -f 4)"
-target="/sdcard/ADU_Tools"
 d2img="$root/tools/sdat2img.py"
 sdat="$target/system.new.dat"
 tfrl="$target/system.transfer.list"
