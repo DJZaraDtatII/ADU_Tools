@@ -82,7 +82,7 @@ cl;
 bnr;
 info;
 brs;
-echo -e "${hi}Unpack selesai...${no}";
+echo -e "${hi}Proses selesai...${no}";
 jda;
 main;
 }
@@ -90,7 +90,7 @@ quit() {
 exit
 }
 cl() {
-echo -e "test"
+clear
 }
 unpack() {
 if [ "$mem2" -lt "5800000" ]; then
@@ -126,6 +126,18 @@ if [[ -e $fosys && -e $cntx ]]; then
     $mext -T -0 -S $cntx -l ${ukuran} -a system $target/raw.img $target/system/  >>$logs/repack_log.txt
     $img2s $target/raw.img $target/sparse.img 4096 >>$logs/repack_log.txt
     rm -r $target/raw.img
+    if [ -d "$target/output/" ]; then
+        rm -r $target/output
+        mkdir $target/output
+        else
+        mkdir $target/output
+    fi
+    cl;
+    bnr;
+    info;
+    brs;
+    echo -e  "${ku}Sedang memproses...${no}";
+    brs;
     api="$(cat /sdcard/ADU_Tools/system/build.prop | grep "ro.build.version.sdk" | cut -d"=" -f 2)"
     if [[ $api = "21" ]]; then
 			is="1"
@@ -138,7 +150,7 @@ if [[ -e $fosys && -e $cntx ]]; then
     fi
     echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output >>$logs/repack_log.txt
     rm -r $target/sparse.img
-    main;
+    udone;
 else
     miss;
 fi
@@ -152,8 +164,8 @@ brs;
 echo -e "${tbl}Menu:${no}";
 echo -e "";
 echo -e "  1. Bongkar DAT  ";
-echo -e "${dim}  2. Repack DAT (comming soon)${no}";
-echo -e "${dim}  3. ROM Tools (comming soon)${no}";
+echo -e "  2. Repack DAT (comming soon)";
+echo -e "${dim}  3. BOOT Tools (comming soon)${no}";
 echo -e "  4. Keluar";
 brs;
 printf %s "Pilih menu kemudian tekan ENTER: ";
