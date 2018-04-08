@@ -109,7 +109,15 @@ if [[ -e $sdat && -e $tfrl ]]; then
     echo -e  "${ku}Sedang memproses...${no}";
     brs;
     $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
-    udone;
+    cl;
+bnr;
+info;
+brs;
+echo -e "${hi}Proses convert DAT ke RAW.img selesai...";
+echo -e "Selanjutnya gunakan Zharchive dari playstore untuk";
+echo -e "membuka atau mengekstrak *.img file${no}";
+jda;
+main;
 else
     miss;
 fi
