@@ -14,7 +14,7 @@ Mobile Tools for unpack and repack DAT
 - `$ ./gk.sh` enter
 
 
-This tools only testen on Mi5s yet
-Please help me to make this tool better
-## cp
+> This tools only tested on Mi5s yet
+> Please help me to make this tool better
+##### Cp
 vanzdobz@gmail.com

@@ -90,7 +90,7 @@ quit() {
 exit
 }
 cl() {
-clear
+echo ""
 }
 unpack() {
 if [ "$mem2" -lt "5800000" ]; then
@@ -208,29 +208,16 @@ sdat="$target/system.new.dat"
 tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
-    bnr;
-    echo -e "${ku}Memeriksa tools... hanya saat pertama kali menggunakan tools ini${no}"
-    brs;
-    chk="$(pkg list-installed python | grep "installed" | cut -d" " -f4)"
-   if [ "$chk" = "" ]; then
-         bnr;
-         echo -e "${ku}Python tidak terinstall diperangkat anda${no}"
-         brs;
-         echo -e "${ku}Memasang Python...${no}"
-         pkg install java
-         main;
-         else
-         bnr;
-         echo -e "${hi}Python: OK!${no}"
-         brs;
-         main;
-   fi
+pkg update && pkg upgrade -assume-yes
+pkg install -y python readline coreutils unzip tar file figlet curl wget cat grep cut ncurses-utils p7zip zip
+
 }
 if [ -d $target ]; then
     main;
 else
     mkdir $target
     mkdir $target/logs
+    chmod -R +x ${root}/tools/*
     envj;
     main;
 fi
