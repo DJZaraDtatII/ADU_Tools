@@ -210,7 +210,7 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
 pkg update && pkg upgrade -assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget cat grep cut ncurses-utils p7zip zip pv
+pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils p7zip zip pv
 }
 if [ -d $target ]; then
     main;
