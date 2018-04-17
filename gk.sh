@@ -9,24 +9,25 @@ me="\e[38;5;196m"
 hi="\e[38;5;82m"
 ku="\e[38;5;226m"
 bi="\e[38;5;21m"
+mag="\e[38;5;14m"
 tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
 	echo -e ""
-	echo -e "------------------------------------------------------"
-	echo -e "            ${hi}${tbl}Android DAT Unpacker Tool${no}                "
-	echo -e "                  ${ku}by Gunkid Dev${no}                       "
-	echo -e "------------------------------------------------------"
+	echo -e "${tbl}${mag}==================================================${no}"
+	echo -e "        ${hi}${tbl}Android DAT Unpacker Tool${no}                "
+	echo -e "              ${me}by Gunkid Dev${no}                       "
+	echo -e "${tbl}${mag}==================================================${no}"
 }
 brs() {
     echo -e ""
-	echo -e "------------------------------------------------------"
+	echo -e "${tbl}${mag}==================================================${no}"
 	echo -e ""
 }
 info() {
 echo -e "";
-echo -e "${tbl}Device info:${no}";
+echo -e "${tbl}${ku}Device info:${no}";
 echo -e "";
 echo -e "  Model         : ${hi}$brand - $model${no}";
 echo -e "  Versi Android : ${hi}$verand${no}";
@@ -90,6 +91,7 @@ quit() {
 exit
 }
 cl() {
+clear
 echo ""
 }
 unpack() {
@@ -169,15 +171,14 @@ cl
 bnr
 info;
 brs;
-echo -e "${tbl}Menu:${no}";
+echo -e "${tbl}${ku}Menu:${no}";
 echo -e "";
 echo -e "  1. Bongkar DAT";
 echo -e "  2. Repack DAT";
 echo -e "${dim}  3. BOOT Tools (comming soon)${no}";
 echo -e "  4. Keluar";
 brs;
-printf %s "Pilih menu kemudian tekan ENTER: ";
-echo -e ""
+echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
 brs;
 read env;
 case $env in
@@ -209,8 +210,7 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
 pkg update && pkg upgrade -assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget cat grep cut ncurses-utils p7zip zip
-
+pkg install -y python readline coreutils unzip tar file figlet curl wget cat grep cut ncurses-utils p7zip zip pv
 }
 if [ -d $target ]; then
     main;
