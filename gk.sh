@@ -52,7 +52,7 @@ main;
 }
 winput() {
 brs;
-echo -e "${me}Masukan salah, coba lagi${no}";
+echo -e "${me}${tbl}Masukan salah, coba lagi${no}";
 jda;
 main;
 }
@@ -61,7 +61,7 @@ cl;
 bnr;
 info;
 brs;
-echo -e "${me}Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 5 GB${no}";
+echo -e "${me}${tbl}Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 5 GB${no}";
 jda;
 main;
 }
@@ -108,16 +108,24 @@ if [[ -e $sdat && -e $tfrl ]]; then
     bnr;
     info;
     brs;
-    echo -e  "${ku}Sedang memproses...${no}";
+    echo -e  "${ku}Covert DAT ke RAW.img...${no}";
     brs;
     $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
     cl;
 bnr;
 info;
 brs;
-echo -e "${hi}Proses convert DAT ke RAW.img selesai...";
-echo -e "Selanjutnya gunakan Zharchive dari playstore untuk";
-echo -e "membuka atau mengekstrak *.img file${no}";
+echo -e "${ku}${tbl}Extract RAW.img ke foleder system...${no}";
+echo -e "$mag"
+if [ -d $target/system ]; then
+rm -r $target/system
+else
+mkdir $target/system
+7z x -o$target/system/ $target/system.img
+fi
+echo -e "$no"
+echo -e "${hi}Unpack selesai...${no}";
+rm $target/system.img
 jda;
 main;
 else
