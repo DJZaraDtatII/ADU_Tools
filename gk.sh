@@ -14,11 +14,12 @@ tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
-	echo -e ""
-	echo -e "${tbl}${mag}==================================================${no}"
-	echo -e "        ${hi}${tbl}Android DAT Unpacker Tool${no}                "
-	echo -e "              ${me}by Gunkid Dev${no}                       "
-	echo -e "${tbl}${mag}==================================================${no}"
+banner="${tbl}${mag}
+==================================================
+=${tbl}${hi}            Android DAT Unpacker ${no}     ${tbl}${mag}          =
+=   ${ku}             by Gunkid Dev ${no}      ${tbl}${mag}            =
+==================================================${no}"
+echo -e "$banner"
 }
 brs() {
     echo -e ""
@@ -26,27 +27,57 @@ brs() {
 	echo -e ""
 }
 info() {
-echo -e "";
-echo -e "${tbl}${ku}Device info:${no}";
-echo -e "";
-echo -e "  Model         : ${hi}$brand - $model${no}";
-echo -e "  Versi Android : ${hi}$verand${no}";
-echo -e "  Memori tersisa: ${hi}$mem${no}";
+info="${tbl}${ku}
+Device info ${no}
+${tbl}
+  Model          : $(getprop ro.product.manufacturer)-$(getprop ro.product.model) ($(getprop ro.product.name))
+  Versi Android  : $(getprop ro.build.version.release)
+  Versi OS       : $(getprop ro.build.version.incremental)
+  Memori tersisa : $mem ${no}"
+echo -e "$info"
 }
 jda() {
 brs;
 read -s -n 1 -p "Kembali ke menu utama..."
+}
+txtinfo() {
+csooninfo="
+
+${hi}  Fiture akan segera ditambahkan,
+dev lagi bertapa nyari materi
+
+Bagi yang ingin ikut berkontribusi silahkan
+kontak saya di:
+ 
+ • Email   : vanzdobz@gmail.com
+ • Phone   : +62812 2514 5xxx
+ • Fb      : -
+ • Discord : -${no}"
+echo -e "$csooninfo"
 }
 csoon() {
 cl;
 bnr;
 info;
 brs;
-echo -e "${hi}Fiture akan ditambahkan, dev lagi bertapa nyari materi";
-echo -e "Bagi yang ingin ikut berkontribusi silahkan kontak saya di:";
-echo -e " • Email   : vanzdobz@gmail.com";
-echo -e " • Phone   : +62812 **** ****";
-echo -e " • Discord : -${no}";
+echo -e "${tbl}${ku}Info:${no}"
+txtinfo;
+jda;
+main;
+}
+repackalrt() {
+cl;
+bnr;
+info;
+brs;
+repackinfo="${tbl}${ku}Info:${no}
+
+${me}Fitur repack sementara dihilangkan,
+permasalahan cross compile binary ${bi}make_ext4fs${no}
+${me}yang belum support untuk Android.${no}"
+
+echo -e "$repackinfo"
+txtinfo;
 jda;
 main;
 }
@@ -70,11 +101,12 @@ cl;
 bnr;
 info;
 brs;
-echo -e "${me}File yg dibutuhkan tidak lengkap...${no}";
-echo -e "";
-echo -e "${ku}Pastikan sudah memasukkan file:${no}";
-echo -e "${tbl}system.new.dat${no} ${ku}dan${no} ${tbl}system.transfer.list${no}";
-echo -e "${ku}kedalam folder:${no} ${tbl}$target${no}"
+missinfo="${me}File yg dibutuhkan tidak lengkap...${no}
+
+${ku}Pastikan sudah memasukkan file:${no}
+${tbl}system.new.dat${no} ${ku}dan${no} ${tbl}system.transfer.list${no}
+${ku}kedalam folder:${no} ${tbl}$target${no}"
+echo -e "$missinfo"
 jda;
 main;
 }
@@ -84,6 +116,7 @@ bnr;
 info;
 brs;
 echo -e "${hi}Proses selesai...${no}";
+txtinfo;
 jda;
 main;
 }
@@ -179,21 +212,23 @@ cl
 bnr
 info;
 brs;
-echo -e "${tbl}${ku}Menu:${no}";
-echo -e "";
-echo -e "  1. Bongkar DAT";
-echo -e "  2. Repack DAT";
-echo -e "${dim}  3. BOOT Tools (comming soon)${no}";
-echo -e "  4. Keluar";
+maininfo="${tbl}${ku}Menu:${no}
+
+  1. Bongkar DAT    4. Dump *.img dari device
+  2. ${dim}Repack DAT${no}     5. Kontributor + credit
+  3. ${dim}BOOT Tools${no}     6. ${me}Keluar${no}"
+echo -e "$maininfo"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
 brs;
 read env;
 case $env in
  1|1) unpack;;
- 2|2) repack;;
+ 2|2) repackalrt;;
  3|3) csoon;;
- 4|4) quit;;
+ 4|4) csoon;;
+ 5|5) csoon;;
+ 6|6) quit;;
  *) winput;;
 esac
 }
