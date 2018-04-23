@@ -448,7 +448,7 @@ sdat="$target/system.new.dat"
 tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
-pkg update && pkg upgrade -assume-yes
+pkg update && pkg upgrade --assume-yes
 pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils fish p7zip zip pv
 }
 if [ -d $target ]; then
