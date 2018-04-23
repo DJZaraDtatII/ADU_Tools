@@ -10,14 +10,15 @@ hi="\e[38;5;82m"
 ku="\e[38;5;226m"
 bi="\e[38;5;21m"
 mag="\e[38;5;14m"
+bpu="\e[48;5;15m"
 tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
 banner="${tbl}${mag}
 ==================================================
-=${tbl}${hi}            Android DAT Unpacker ${no}     ${tbl}${mag}          =
-=   ${ku}             by Gunkid Dev ${no}      ${tbl}${mag}            =
+=${tbl}${bpu}${bi}             Android DAT Unpacker               ${no}${tbl}${mag}=
+=${tbl}${bpu}${bi}                  by gk-dev                     ${no}${tbl}${mag}=
 ==================================================${no}"
 echo -e "$banner"
 }
@@ -44,7 +45,7 @@ txtinfo() {
 csooninfo="
 
 ${hi}  Fiture akan segera ditambahkan,
-dev lagi bertapa nyari materi
+dev lagi bertapa nyari materi.
 
 Bagi yang ingin ikut berkontribusi silahkan
 kontak saya di:
@@ -72,8 +73,9 @@ info;
 brs;
 repackinfo="${tbl}${ku}Info:${no}
 
-${me}Fitur repack sementara dihilangkan,
-permasalahan cross compile binary ${bi}make_ext4fs${no}
+${me}  Fiture untuk sementara dinonaktifkan!
+
+Permasalahan cross compile binary ${bi}make_ext4fs${no}
 ${me}yang belum support untuk Android.${no}"
 
 echo -e "$repackinfo"
