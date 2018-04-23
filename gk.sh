@@ -136,7 +136,133 @@ else
 unpackmain;
 fi
 }
+ubuntu_done() {
+cl;
+bnr;
+info;
+brs;
+ubuntud="${hi}Instalasi ubuntu selesai...
+Anda dapat memulai Ubuntu dari start screen
+atau dengan mengetikkan perintah ${mag}startubuntu${no}
+${ku}
+Silahkan restart termux${no}"
+echo -e "$ubuntud"
+jda;
+main;
+}
+installubuntu() {
+cl;
+bnr;
+info;
+brs;
+cd ~/
+echo -e "${ku}Cloning repositories...${no}$mag"
+git clone https://github.com/rendiix/ubuntu-chroot.git
+echo -e "${ku}Memasang ubuntu...${no}$mag"
+cd ~/ubuntu-chroot
+chmod +x ubuntu.sh
+exec ubuntu.sh
+cd $root
+termuxstart;
+}
+termuxstart() {
+prof=/data/data/com.termux/files/usr/etc/profile
+motd=/data/data/com.termux/files/usr/etc/motd
+cl;
+bnr;
+info;
+brs;
+echo -e "${ku}Menambahkan Termux start screen...$no"
+brs;
+echo -e "${ku}Masukkan nama anda...
 
+contoh nama: gk-dev
+akan tampil di start seperti ini:${no}${hi}"
+figlet gk-dev
+brs;
+read -p "Nama: " nama
+cat > $motd <<- EOM
+EOM
+cat > $prof <<- 'EOM'
+for i in /data/data/com.termux/files/usr/etc/profile.d/*.sh; do
+	if [ -r $i ]; then
+		. $i
+	fi
+done
+unset i
+
+# Source etc/bash.bashrc and ~/.bashrc also for interactive bash login shells:
+if [ "$BASH" ]; then
+        if [[ "$-" == *"i"* ]]; then
+                if [ -r /data/data/com.termux/files/usr/etc/bash.bashrc ]; then
+                        . /data/data/com.termux/files/usr/etc/bash.bashrc
+                fi
+                if [ -r /data/data/com.termux/files/home/.bashrc ]; then
+                        . /data/data/com.termux/files/home/.bashrc
+                fi
+        fi
+fi
+me="\e[38;5;196m"
+hi="\e[38;5;82m"
+ku="\e[38;5;226m"
+bi="\e[38;5;21m"
+mag="\e[38;5;14m"
+tbl="\e[1m"
+dim="\e[2m"
+no="\e[0m"
+tgl="$(date)"
+logo="$(figlet ganti_nama)"
+ubuntu() {
+clear
+echo -e "${tbl}${hi}Welcome to Ubuntu!";
+echo -e "";
+echo -e "$logo"
+echo -e "$no"
+echo -e "${mag}$tgl${no}"
+echo -e "${hi}----------------------------${no}";
+echo -e ""
+startubuntu
+}
+termux() {
+clear
+echo -e "${tbl}${hi}Welcome to termux!";
+echo -e "";
+echo -e "$logo"
+echo -e "$no"
+echo -e "${mag}$tgl${no}"
+echo -e "${hi}----------------------------${no}";
+echo -e ""
+fish
+}
+salah() {
+start;
+}
+
+start() {
+clear
+echo -e "${tbl}${hi}Welcome to Termux start screen";
+echo -e "";
+echo -e "$logo"
+echo -e "$no"
+echo -e "${mag}$tgl${no}";
+echo -e "${hi}----------------------------${no}";
+echo -e ""
+echo -e "${tbl}${ku}Silahkan pilih system:${no}"
+echo -e "${tbl}${mag}";
+echo -e "  1. Ubuntu   2. Termux";
+echo -e "${no}";
+read env;
+case $env in
+ 1|1) ubuntu;;
+ 2|2) termux;;
+ *) salah;;
+esac
+}
+start;
+EOM
+sed -i "s/ganti_nama/$nama/g" $prof
+ubuntu_done;
+}
 unpackmain() {
 if [[ -e $sdat && -e $tfrl ]]; then
     cl;
@@ -208,18 +334,17 @@ else
     miss;
 fi
 }
-
-main() {
+menu_dat() {
 cl
-bnr
+bnr;
 info;
 brs;
-maininfo="${tbl}${ku}Menu:${no}
+dat_menu_info="${tbl}${ku}Android DAT menu:${no}
 
-  1. Bongkar DAT    4. Dump *.img dari device
-  2. ${dim}Repack DAT${no}     5. Kontributor + credit
-  3. ${dim}BOOT Tools${no}     6. ${me}Keluar${no}"
-echo -e "$maininfo"
+  1. Bongkar DAT
+  2. ${dim}Repack DAT${no}
+  3. ${ku}Kembali ke menu utama${no}"
+echo -e "$dat_menu_info"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
 brs;
@@ -227,9 +352,78 @@ read env;
 case $env in
  1|1) unpack;;
  2|2) repackalrt;;
+ 3|3) main;;
+ *) winput;;
+esac
+}
+menu_lainnya() {
+cl
+bnr;
+info;
+brs;
+menu_lainnya_info="${tbl}${ku}Menu lainnya:${no}
+
+  1. Install Ubuntu 18 Bionic
+  2. ${ku}Kembali ke menu utama${no}"
+echo -e "$menu_lainnya_info"
+brs;
+echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
+brs;
+read env;
+case $env in
+ 1|1) installubuntu;;
+ 2|2) main;;
+ *) winput;;
+esac
+}
+informasi() {
+cl;
+bnr;
+info;
+brs;
+informasi_info="${tbl}${ku}Tentang Tools:${no}
+
+Kontributor:
+  • rendiix (owner)
+  • (menunggu yg bersedia)
+  •
+
+Kredit:
+  • xpirt@xda untuk sdat2img.py
+  • 
+
+Donasi:
+Kami sangat berterima kasih untuk berpapun donasi yang diberikan,
+
+  • rendiix: 0812-2514-5217 (hanya menerima dlm bentuk pulsa)
+  • "
+
+echo -e "$informasi_info"
+jda;
+main;
+}
+
+main() {
+cl
+bnr;
+info;
+brs;
+maininfo="${tbl}${ku}Menu utama:${no}
+
+  1. DAT menu     4. Menu lain-lain
+  2. ${dim}ROM menu${no}     5. Informasi
+  3. ${dim}BOOT menu${no}    6. ${me}Keluar${no}"
+echo -e "$maininfo"
+brs;
+echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
+brs;
+read env;
+case $env in
+ 1|1) menu_dat;;
+ 2|2) csoon;;
  3|3) csoon;;
- 4|4) csoon;;
- 5|5) csoon;;
+ 4|4) menu_lainnya;;
+ 5|5) informasi;;
  6|6) quit;;
  *) winput;;
 esac
@@ -255,7 +449,7 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 envj() {
 pkg update && pkg upgrade -assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils p7zip zip pv
+pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils fish p7zip zip pv
 }
 if [ -d $target ]; then
     main;
