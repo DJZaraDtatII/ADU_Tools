@@ -28,14 +28,15 @@ brs() {
 	echo -e ""
 }
 info() {
+curve=$(grep "ADU_Tools V" README.md | cut -d" " -f3)
 info="${tbl}${ku}
-Device info ${no}
-${tbl}
-  Model          : $(getprop ro.product.manufacturer)-$(getprop ro.product.model) ($(getprop ro.product.name))
-  Versi Android  : $(getprop ro.build.version.release)
-  Versi OS       : $(getprop ro.build.version.incremental)
-  Memori tersisa : $mem
-  Versi tools    : $curv${no} ${hi}$update_avail_info${no}"
+Device info: ${no}
+
+  Model          : ${mag}$(getprop ro.product.manufacturer)-$(getprop ro.product.model) ($(getprop ro.product.name))${no}
+  Versi Android  : ${mag}$(getprop ro.build.version.release)${no}
+  Versi OS       : ${mag}$(getprop ro.build.version.incremental)${no}
+  Memori tersisa : ${mag}$mem${no}
+  Versi tools    : ${mag}$curve${no} ${hi}$update_avail_info${no}"
 echo -e "$info"
 }
 jda() {
@@ -365,8 +366,7 @@ brs;
 menu_lainnya_info="${tbl}${ku}Menu lainnya:${no}
 
   1. Install Ubuntu 18 Bionic
-  2. Periksa pembaruan
-  3. ${ku}Kembali ke menu utama${no}"
+  2. ${ku}Kembali ke menu utama${no}"
 echo -e "$menu_lainnya_info"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
@@ -374,8 +374,7 @@ brs;
 read env;
 case $env in
  1|1) installubuntu;;
- 2|2) csoon;;
- 3|3) main;;
+ 2|2) main;;
  *) winput;;
 esac
 }
@@ -427,19 +426,21 @@ info;
 brs;
 echo -e "${me}Tidak dapat memeriksa pembaruan!${no}"
 sleep 2
-update_menu;
+main;
 else 
 if [ "$curv" -eq "$newv" ]; then
 cl
 bnr;
 info;
 brs;
-echo "${hi}Versi $newv sudah yang terbaru${no}"
+echo -e "${hi}Versi $newv sudah yang terbaru${no}"
 sleep 2
-update_menu;
+main;
 else
  if [ "$curv" -lt "$newv" ]; then
-update_avail=" 4. Install pembaruan v$newv"
+update_avail="
+ y. Install pembaruan v$newv
+"
 update_avail_info="Update tersedia"
 update_menu;
 fi
@@ -449,10 +450,13 @@ fi
 update() {
 git reset --hard
 git pull
+chmod +x *
+chmod +x tools/*
 update_menu;
 }
 autocheck_update() {
 if [[ "$autocheck_update_info" == "hidup" ]]; then
+  echo -e "$mag"
   toggle_auto_update="Nonaktifkan pembaruan otomatis? [y/n]"
   choice=""
   read -n 1 -p "$toggle_auto_update" choice
@@ -460,11 +464,13 @@ if [[ "$autocheck_update_info" == "hidup" ]]; then
     cat > $root/tools/auto_update <<- EOM
 mati
 EOM
+echo -e "$no"
 update_menu;
     else
     update_menu;
     fi
   else
+  echo -e "$mag"
   toggle_auto_update="Hidupkan pembaruan otomatis? [y/n]"
   choice=""
   read -n 1 -p "$toggle_auto_update" choice
@@ -472,6 +478,7 @@ update_menu;
     cat > $root/tools/auto_update <<- EOM
 hidup
 EOM
+echo -e "$no"
 update_menu;
     else
     update_menu;
@@ -485,12 +492,11 @@ info;
 brs;
 autocheck_update_info="$(cat $root/tools/auto_update)"
 update_menu_info="${tbl}${ku}Menu pembaruan:${no} ${hi}${update_avail_info}${no}
- 
- 1. Otomatis periksa pembaruan [${tbl}${autocheck_update_info}${no}]
+$update_avail
+ 1. Otomatis periksa pembaruan [${mag}${autocheck_update_info}${no}]
  2. Periksa pembaruan
- 3. Ke menu utama
-$update_avail"
-
+ 3. ${ku}Ke menu utama${no}
+ 4. ${me}Keluar${no}"
 echo -e "$update_menu_info"
 echo -e ""
 echo -e "Masukkan pilihan:"
@@ -499,7 +505,8 @@ case $env in
  1|1) autocheck_update;;
  2|2) check_update;;
  3|3) main;;
- u|u) update;;
+ 4|4) quit;;
+ y|y) update;;
  *) update_menu;;
 esac
 }
@@ -550,7 +557,6 @@ sdat="$target/system.new.dat"
 tfrl="$target/system.transfer.list"
 logs="$target/logs"
 auto_update_check="$(cat $root/tools/auto_update)"
-curv=$(grep "ADU_Tools V" README.md | cut -d" " -f3)
 envj() {
 pkg update && pkg upgrade --assume-yes
 pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils fish p7zip zip pv
