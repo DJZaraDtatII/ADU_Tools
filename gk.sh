@@ -568,7 +568,7 @@ brs;
 echo -e "${ku}Memasang dependency..."
 echo -e "$mag"
 pkg update && pkg upgrade --assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget gnupg2 grep ncurses-utils fish p7zip zip pv
+pkg install -y python readline coreutils unzip tar file figlet curl wget gnupg2 grep ncurses-utils fish p7zip zip pv proot
 brs;
 echo -e "${ku}Memasang repo-pointless..."
 echo -e "$mag"
