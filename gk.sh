@@ -159,11 +159,14 @@ info;
 brs;
 cd ~/
 echo -e "${ku}Cloning repositories...${no}$mag"
+echo ""
 git clone https://github.com/rendiix/ubuntu-chroot.git
+cd ~/ubuntu-chroot/
+echo ""
 echo -e "${ku}Memasang ubuntu...${no}$mag"
-cd ~/ubuntu-chroot
+echo ""
 chmod +x ubuntu.sh
-exec ubuntu.sh
+./ubuntu.sh
 cd $root
 termuxstart;
 }
@@ -558,8 +561,22 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 auto_update_check="$(cat $root/tools/auto_update)"
 envj() {
+cl
+bnr;
+info;
+brs;
+echo -e "${ku}Memasang dependency..."
+echo -e "$mag"
 pkg update && pkg upgrade --assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget grep ncurses-utils fish p7zip zip pv
+pkg install -y python readline coreutils unzip tar file figlet curl wget gnupg2 grep ncurses-utils fish p7zip zip pv
+brs;
+echo -e "${ku}Memasang repo-pointless..."
+echo -e "$mag"
+mkdir $PREFIX/etc/apt/sources.list.d
+echo "deb [trusted=yes] https://its-pointless.github.io/files/ termux extras" > $PREFIX/etc/apt/sources.list.d/pointless.list
+wget https://its-pointless.github.io/pointless.gpg
+apt-key add pointless.gpg
+apt update
 }
 if [ -d $target ]; then
     run_check_update;
