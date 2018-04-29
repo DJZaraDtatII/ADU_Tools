@@ -341,9 +341,12 @@ cntx="$target/file_contexts"
 if [[ -e $fosys && -e $cntx ]]; then
     insert_imgsize;
     bnr;
-    echo -e "${ku}Membuat sparse img..."
+    echo -e "${ku}Membuat raw img..."
     echo -e "$mag"
     $mext -T -0 -S $cntx -l ${ukuran} -a system $target/raw.img $target/system/
+    bnr;
+    echo -e "${ku}Membuat sparse img..."
+    echo -e "$mag"
     $img2s $target/raw.img $target/sparse.img 4096 >$logs/repack_log.txt
     rm -r $target/raw.img
     if [ -d "$target/output/" ]; then
@@ -365,8 +368,9 @@ if [[ -e $fosys && -e $cntx ]]; then
 		elif [[ $api -ge "24" ]]; then
 			is="4"
     fi
-    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output >$logs/repack_log.txt
+    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output
     rm -r $target/sparse.img
+    sleep 3
     udone;
 else
     miss;
