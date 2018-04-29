@@ -15,7 +15,6 @@ tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
-cl;
 banner="${tbl}${mag}
 ==================================================
 =${tbl}${bpu}${bi}             Android DAT Unpacker               ${no}${tbl}${mag}=
@@ -469,7 +468,7 @@ main;
 else
  if [ "$curv" -lt "$newv" ]; then
 update_avail="
- ${mag}y. Install pembaruan v$newv${no}
+ y. Install pembaruan v$newv
 "
 update_avail_info="Update tersedia"
 update_menu;
@@ -478,11 +477,14 @@ fi
 fi
 }
 update() {
-git reset --hard
-git pull
+mkdir temp
+wget https://codeload.github.com/rendiix/ADU_Tools/zip/master -O $root/temp/adu.zip
+7z x -o$root/temp/ $root/temp/adu.zip
+cp -R $root/temp/*/* $root
+rm -R $root/temp
 chmod +x *
 chmod +x tools/*
-update_menu;
+exec $root/gk.sh
 }
 autocheck_update() {
 if [[ "$autocheck_update_info" == "hidup" ]]; then
