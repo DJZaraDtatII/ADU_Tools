@@ -469,7 +469,7 @@ main;
 else
  if [ "$curv" -lt "$newv" ]; then
 update_avail="
- y. Install pembaruan v$newv
+ ${mag}y. Install pembaruan v$newv${no}
 "
 update_avail_info="Update tersedia"
 update_menu;
