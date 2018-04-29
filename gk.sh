@@ -15,6 +15,7 @@ tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
+cl;
 banner="${tbl}${mag}
 ==================================================
 =${tbl}${bpu}${bi}             Android DAT Unpacker               ${no}${tbl}${mag}=
@@ -477,6 +478,9 @@ fi
 fi
 }
 update() {
+bnr;
+echo -e "${ku}Memasang pembaruan...$no"
+echo -e "$mag"
 mkdir temp
 wget https://codeload.github.com/rendiix/ADU_Tools/zip/master -O $root/temp/adu.zip
 7z x -o$root/temp/ $root/temp/adu.zip
@@ -484,6 +488,11 @@ cp -R $root/temp/*/* $root
 rm -R $root/temp
 chmod +x *
 chmod +x tools/*
+bnr;
+echo -e "${hi}Install pembaruan selesai...${no}"
+echo -e ""
+echo -e "Memulai ulang tools..."
+sleep 4
 exec $root/gk.sh
 }
 autocheck_update() {
