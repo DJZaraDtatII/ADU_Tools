@@ -19,7 +19,9 @@ banner="${tbl}${mag}
 ==================================================
 =${tbl}${bpu}${bi}             Android DAT Unpacker               ${no}${tbl}${mag}=
 =${tbl}${bpu}${bi}                  by gk-dev                     ${no}${tbl}${mag}=
-==================================================${no}"
+==================================================${no}
+
+"
 echo -e "$banner"
 }
 brs() {
@@ -59,7 +61,6 @@ kontak saya di:
 echo -e "$csooninfo"
 }
 csoon() {
-cl;
 bnr;
 info;
 brs;
@@ -69,7 +70,6 @@ jda;
 main;
 }
 repackalrt() {
-cl;
 bnr;
 info;
 brs;
@@ -92,7 +92,6 @@ jda;
 main;
 }
 memwarn() {
-cl;
 bnr;
 info;
 brs;
@@ -101,7 +100,6 @@ jda;
 main;
 }
 miss() {
-cl;
 bnr;
 info;
 brs;
@@ -115,12 +113,10 @@ jda;
 main;
 }
 udone() {
-cl;
 bnr;
 info;
 brs;
 echo -e "${hi}Proses selesai...${no}";
-txtinfo;
 jda;
 main;
 }
@@ -139,7 +135,6 @@ unpackmain;
 fi
 }
 ubuntu_done() {
-cl;
 bnr;
 info;
 brs;
@@ -153,7 +148,6 @@ jda;
 main;
 }
 installubuntu() {
-cl;
 bnr;
 info;
 brs;
@@ -173,7 +167,6 @@ termuxstart;
 termuxstart() {
 prof=/data/data/com.termux/files/usr/etc/profile
 motd=/data/data/com.termux/files/usr/etc/motd
-cl;
 bnr;
 info;
 brs;
@@ -268,9 +261,12 @@ EOM
 sed -i "s/ganti_nama/$nama/g" $prof
 ubuntu_done;
 }
+get_imgsize() {
+imgsize="$(wc -c $target/system.img | cut -d" " -f1)"
+echo -e "$imgsize" > $target/logs/imgsize.txt
+}
 unpackmain() {
 if [[ -e $sdat && -e $tfrl ]]; then
-    cl;
     bnr;
     info;
     brs;
@@ -281,16 +277,16 @@ if [[ -e $sdat && -e $tfrl ]]; then
 bnr;
 info;
 brs;
-echo -e "${ku}${tbl}Extract RAW.img ke foleder system...${no}";
+echo -e "${ku}${tbl}Extract RAW.img ke folder system...${no}";
 echo -e "$mag"
 if [ -d $target/system ]; then
 rm -r $target/system
-else
+fi
 mkdir $target/system
 7z x -o$target/system/ $target/system.img
-fi
 echo -e "$no"
 echo -e "${hi}Unpack selesai...${no}";
+get_imgsize;
 rm $target/system.img
 jda;
 main;
@@ -298,17 +294,56 @@ else
     miss;
 fi
 }
+insert_imgsize() {
+bnr;
+choice=1
+while [[ $choice != 0 ]]; do
+menu_img_size="
+${ku}Masukkan ukuran partisi:$mag
+
+  1. Otomatis dari *.img saat ini
+  2. Manual
+
+"
+echo -e "$menu_img_size"
+read -n 1 -p "Masukkan pilihan:" choice
+ case $choice in
+        "1" ) echo -e "" 
+              echo -e "Menggunakan ukuran partisi saat ini $size"
+              size="$(cat $target/logs/imgsize.txt)"
+              ukuran=$size
+              echo -e "$no"
+              break ;;
+        "2" ) echo -e ""
+              read -p "Masukkan ukuran:" size
+              echo -e "Ukuran partisi $ukuran"
+              ukuran=$size
+              echo -e "$no"
+              break ;;
+        * ) echo -e ""
+            echo -e "${me}Masukan salah! Mohon coba kembali.${no}"
+            echo -e ""
+ esac
+done
+}
+
 repack() {
+fosys="$target/system"
+if [ -f "$target/file_contexts.bin" ]; then
+bnr;
+echo -e "${ku}Convert file_contexts.bin..."
+echo -e "$no"
+$fc_con -x $target/file_contexts.bin $target/
+sleep 3
+fi
+cntx="$target/file_contexts"
 if [[ -e $fosys && -e $cntx ]]; then
-    cl;
+    insert_imgsize;
     bnr;
-    info;
-    brs;
-    echo -e  "${ku}Sedang memproses...${no}";
-    brs;
-    read -p "Masukkan ukuran system (bit): " ukuran
-    $mext -T -0 -S $cntx -l ${ukuran} -a system $target/raw.img $target/system/  >>$logs/repack_log.txt
-    $img2s $target/raw.img $target/sparse.img 4096 >>$logs/repack_log.txt
+    echo -e "${ku}Membuat sparse img..."
+    echo -e "$mag"
+    $mext -T -0 -S $cntx -l ${ukuran} -a system $target/raw.img $target/system/
+    $img2s $target/raw.img $target/sparse.img 4096 >$logs/repack_log.txt
     rm -r $target/raw.img
     if [ -d "$target/output/" ]; then
         rm -r $target/output
@@ -316,12 +351,9 @@ if [[ -e $fosys && -e $cntx ]]; then
         else
         mkdir $target/output
     fi
-    cl;
     bnr;
-    info;
-    brs;
-    echo -e  "${ku}Sedang memproses...${no}";
-    brs;
+    echo -e "${ku}Membuat DAT file...${no}";
+    echo -e "$mag"
     api="$(cat /sdcard/ADU_Tools/system/build.prop | grep "ro.build.version.sdk" | cut -d"=" -f 2)"
     if [[ $api = "21" ]]; then
 			is="1"
@@ -332,7 +364,7 @@ if [[ -e $fosys && -e $cntx ]]; then
 		elif [[ $api -ge "24" ]]; then
 			is="4"
     fi
-    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output >>$logs/repack_log.txt
+    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output >$logs/repack_log.txt
     rm -r $target/sparse.img
     udone;
 else
@@ -340,14 +372,13 @@ else
 fi
 }
 menu_dat() {
-cl
 bnr;
 info;
 brs;
 dat_menu_info="${tbl}${ku}Android DAT menu:${no}
 
   1. Bongkar DAT
-  2. ${dim}Repack DAT${no}
+  2. Repack DAT
   3. ${ku}Kembali ke menu utama${no}"
 echo -e "$dat_menu_info"
 brs;
@@ -356,13 +387,12 @@ brs;
 read env;
 case $env in
  1|1) unpack;;
- 2|2) repackalrt;;
+ 2|2) repack;;
  3|3) main;;
  *) winput;;
 esac
 }
 menu_lainnya() {
-cl
 bnr;
 info;
 brs;
@@ -382,7 +412,6 @@ case $env in
 esac
 }
 informasi() {
-cl;
 bnr;
 info;
 brs;
@@ -415,7 +444,6 @@ run_check_update() {
   fi
 }
 check_update(){
-cl
 bnr;
 info;
 brs;
@@ -423,7 +451,6 @@ echo -e "${ku}Memeriksa pembaruan silahkan tunggu...${no}"
 newv="$(curl -s curl https://raw.githubusercontent.com/rendiix/ADU_Tools/master/README.md | grep "ADU_Tools V" | cut -d" " -f3 | cut -d"." -f3)"
 curv="$(grep "ADU_Tools V" README.md | cut -d" " -f3 | cut -d"." -f3)"
 if [ -z "$newv" ]; then
-cl
 bnr;
 info;
 brs;
@@ -432,7 +459,6 @@ sleep 2
 main;
 else 
 if [ "$curv" -eq "$newv" ]; then
-cl
 bnr;
 info;
 brs;
@@ -489,7 +515,6 @@ update_menu;
 fi
 }
 update_menu() {
-cl
 bnr;
 info;
 brs;
@@ -514,7 +539,6 @@ case $env in
 esac
 }
 main() {
-cl
 bnr;
 info;
 brs;
@@ -545,9 +569,8 @@ root=$(pwd)
 target="/sdcard/ADU_Tools"
 img2s="$root/tools/img2simg"
 img2d="$root/tools/img2sdat.py"
+fc_con="$root/tools/fc_convert"
 mext="$root/tools/make_ext4fs"
-fosys="$target/system"
-cntx="$target/file_contexts.bin"
 outdat="$target/output/"
 build="/system/build.prop"
 model="$(cat $build | grep "ro.product.model" | cut -d"=" -f 2)"
@@ -561,7 +584,6 @@ tfrl="$target/system.transfer.list"
 logs="$target/logs"
 auto_update_check="$(cat $root/tools/auto_update)"
 envj() {
-cl
 bnr;
 info;
 brs;
