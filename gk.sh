@@ -15,6 +15,7 @@ tbl="\e[1m"
 dim="\e[2m"
 no="\e[0m"
 bnr() {
+cl;
 banner="${tbl}${mag}
 ==================================================
 =${tbl}${bpu}${bi}             Android DAT Unpacker               ${no}${tbl}${mag}=
@@ -468,7 +469,7 @@ main;
 else
  if [ "$curv" -lt "$newv" ]; then
 update_avail="
- y. Install pembaruan v$newv
+ ${mag}y. Install pembaruan v$newv${no}
 "
 update_avail_info="Update tersedia"
 update_menu;
