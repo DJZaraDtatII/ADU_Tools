@@ -32,8 +32,7 @@ brs() {
 }
 info() {
 curve=$(grep "ADU_Tools V" README.md | cut -d" " -f3)
-info="${tbl}${ku}
-Device info: ${no}
+info="${tbl}${ku}Device info: ${no}
 
   Model          : ${mag}$(getprop ro.product.manufacturer)-$(getprop ro.product.model) ($(getprop ro.product.name))${no}
   Versi Android  : ${mag}$(getprop ro.build.version.release)${no}
@@ -49,7 +48,7 @@ read -s -n 1 -p "Kembali ke menu utama..."
 txtinfo() {
 csooninfo="
 
-${hi}  Fiture akan segera ditambahkan,
+${hi}Fiture akan segera ditambahkan,
 dev lagi bertapa nyari materi.
 
 Bagi yang ingin ikut berkontribusi silahkan
@@ -273,7 +272,7 @@ if [[ -e $sdat && -e $tfrl ]]; then
     brs;
     echo -e  "${ku}Covert DAT ke RAW.img...${no}";
     brs;
-    $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
+    pv $target/system.img | $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
     cl;
 bnr;
 info;
@@ -424,7 +423,7 @@ bnr;
 info;
 brs;
 informasi_info="${tbl}${ku}Tentang Tools:${no}
-
+$mag
 Kontributor:
   • rendiix (owner)
   • 
@@ -438,7 +437,7 @@ Donasi:
 Kami sangat berterima kasih untuk berpapun donasi yang diberikan,
 
   • rendiix: 0812-2514-5217 (hanya menerima dlm bentuk pulsa)
-  • "
+  • ${no}"
 
 echo -e "$informasi_info"
 jda;
