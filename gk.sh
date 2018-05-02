@@ -603,13 +603,13 @@ logs="$target/logs"
 auto_update_check="$(cat $root/tools/auto_update)"
 envj() {
 bnr;
-info;
-brs;
 echo -e "${ku}Memasang dependency..."
 echo -e "$mag"
 pkg update && pkg upgrade --assume-yes
-pkg install -y python readline coreutils unzip tar file figlet curl wget gnupg2 grep ncurses-utils fish p7zip zip pv proot
-brs;
+pkg install -y python readline coreutils unzip tar file figlet curl wget gnup* grep ncurs* fish p7zip zip pv proot
+echo -e "\n${hi}Selesai..."
+sleep 2
+bnr;
 echo -e "${ku}Memasang repo-pointless..."
 echo -e "$mag"
 mkdir $PREFIX/etc/apt/sources.list.d
@@ -617,6 +617,22 @@ echo "deb [trusted=yes] https://its-pointless.github.io/files/ termux extras" > 
 wget https://its-pointless.github.io/pointless.gpg
 apt-key add pointless.gpg
 apt update
+rm pointless.gpg
+echo -e "\n${hi}Selesai..."
+sleep 2
+bnr;
+echo -e "\n${ku}Membuat pintasan ADU_Tools...${no}\n"
+launcher="$PREFIX/bin/gkdev"
+cat > $launcher <<- EOM
+#!$PREFIX/bin/bash
+cd $root/
+./gk.sh
+
+EOM
+chmod 777 $launcher
+sleep 2
+echo -e "\n${hi}Selesai!\n${no}\n${mag}Selanjutnya anda dapat memulai tools dengan\nmengetikkan${no} gkdev${mag} pada terminal.${no}"
+sleep 5
 }
 if [ -d $target ]; then
     run_check_update;
