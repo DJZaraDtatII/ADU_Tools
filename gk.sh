@@ -45,7 +45,7 @@ jda() {
 brs;
 read -s -n 1 -p "Kembali ke menu utama..."
 }
-txtinfo() {
+about_info() {
 csooninfo="
 
 ${hi}Fiture akan segera ditambahkan,
@@ -58,18 +58,18 @@ kontak saya di:
  • Phone   : +62812 2514 5xxx
  • Fb      : -
  • Discord : -${no}"
-echo -e "$csooninfo"
+p "$csooninfo"
 }
 csoon() {
 bnr;
 info;
 brs;
 echo -e "${tbl}${ku}Info:${no}"
-txtinfo;
+about_info;
 jda;
 main;
 }
-repackalrt() {
+disable_menu_alert() {
 bnr;
 info;
 brs;
@@ -80,14 +80,8 @@ ${me}  Fiture untuk sementara dinonaktifkan!
 Permasalahan cross compile binary ${bi}make_ext4fs${no}
 ${me}yang belum support untuk Android.${no}"
 
-echo -e "$repackinfo"
-txtinfo;
-jda;
-main;
-}
-winput() {
-brs;
-echo -e "${me}${tbl}Masukan salah, coba lagi${no}";
+p "$repackinfo"
+about_info;
 jda;
 main;
 }
@@ -95,7 +89,7 @@ memwarn() {
 bnr;
 info;
 brs;
-echo -e "${me}${tbl}Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 5 GB${no}";
+p "${me}${tbl}Penyimpanan tidak cukup, pastikan ruang kosong lebih dari 5 GB${no}";
 jda;
 main;
 }
@@ -108,7 +102,7 @@ missinfo="${me}File yg dibutuhkan tidak lengkap...${no}
 ${ku}Pastikan sudah memasukkan file:${no}
 ${tbl}system.new.dat${no} ${ku}dan${no} ${tbl}system.transfer.list${no}
 ${ku}kedalam folder:${no} ${tbl}$target${no}"
-echo -e "$missinfo"
+p "$missinfo"
 jda;
 main;
 }
@@ -116,11 +110,17 @@ udone() {
 bnr;
 info;
 brs;
-echo -e "${hi}Proses selesai...${no}";
+p "${hi}Proses selesai...${no}";
 jda;
 main;
 }
 quit() {
+bnr;
+p "${hi}Terima kasih sudah menggunakan ADU_Tools.
+Jika tools ini bermanfaat silahkan share, report bugs,
+atau donasi seiklasnya.$no
+
+${bi}gk-dev${no}"
 exit
 }
 cl() {
@@ -143,7 +143,7 @@ Anda dapat memulai Ubuntu dari start screen
 atau dengan mengetikkan perintah ${mag}startubuntu${no}
 ${ku}
 Silahkan restart termux${no}"
-echo -e "$ubuntud"
+p "$ubuntud"
 jda;
 main;
 }
@@ -152,12 +152,12 @@ bnr;
 info;
 brs;
 cd ~/
-echo -e "${ku}Cloning repositories...${no}$mag"
+p "${ku}Cloning repositories...${no}$mag"
 echo ""
 git clone https://github.com/rendiix/ubuntu-chroot.git
 cd ~/ubuntu-chroot/
 echo ""
-echo -e "${ku}Memasang ubuntu...${no}$mag"
+p "${ku}Memasang ubuntu...${no}$mag"
 echo ""
 chmod +x ubuntu.sh
 ./ubuntu.sh
@@ -165,14 +165,14 @@ cd $root
 termuxstart;
 }
 termuxstart() {
-prof=/data/data/com.termux/files/usr/etc/profile
-motd=/data/data/com.termux/files/usr/etc/motd
+prof=$PREFIX/etc/profile
+motd=$PREFIX/etc/motd
 bnr;
 info;
 brs;
-echo -e "${ku}Menambahkan Termux start screen...$no"
+p "${ku}Menambahkan Termux start screen...$no"
 brs;
-echo -e "${ku}Masukkan nama anda...
+p "${ku}Masukkan nama anda...
 
 contoh nama: gk-dev
 akan tampil di start seperti ini:${no}${hi}"
@@ -232,9 +232,6 @@ echo -e "${hi}----------------------------${no}";
 echo -e ""
 fish
 }
-salah() {
-start;
-}
 
 start() {
 clear
@@ -249,12 +246,13 @@ echo -e "${tbl}${ku}Silahkan pilih system:${no}"
 echo -e "${tbl}${mag}";
 echo -e "  1. Ubuntu   2. Termux";
 echo -e "${no}";
-read env;
+while read env; do
 case $env in
- 1|1) ubuntu;;
- 2|2) termux;;
- *) salah;;
+ 1) ubuntu; break;;
+ 2) termux; break;;
+ *) echo -e "${me}Masukan salah!${no}";;
 esac
+done
 }
 start;
 EOM
@@ -270,14 +268,14 @@ if [[ -e $sdat && -e $tfrl ]]; then
     bnr;
     info;
     brs;
-    echo -e  "${ku}Covert DAT ke RAW.img...${no}";
+    p  "${ku}Covert DAT ke RAW.img...${no}";
     brs;
     pv $target/system.img | $d2img $tfrl $sdat $target/system.img 2>/dev/null >> $logs/unpack_log.txt
     cl;
 bnr;
 info;
 brs;
-echo -e "${ku}${tbl}Extract RAW.img ke folder system...${no}";
+p "${ku}${tbl}Extract RAW.img ke folder system...${no}";
 echo -e "$mag"
 if [ -d $target/system ]; then
 rm -r $target/system
@@ -285,7 +283,7 @@ fi
 mkdir $target/system
 7z x -o$target/system/ $target/system.img
 echo -e "$no"
-echo -e "${hi}Unpack selesai...${no}";
+p "${hi}Unpack selesai...${no}";
 get_imgsize;
 rm $target/system.img
 jda;
@@ -296,8 +294,6 @@ fi
 }
 insert_imgsize() {
 bnr;
-choice=1
-while [[ $choice != 0 ]]; do
 menu_img_size="
 ${ku}Masukkan ukuran partisi:$mag
 
@@ -306,23 +302,21 @@ ${ku}Masukkan ukuran partisi:$mag
 
 "
 echo -e "$menu_img_size"
-read -n 1 -p "Masukkan pilihan:" choice
- case $choice in
-        "1" ) echo -e "" 
-              echo -e "Menggunakan ukuran partisi saat ini $size"
+while read env; do
+ case $env in
+        1) echo -e "" 
+              p "Menggunakan ukuran partisi saat ini $size"
               size="$(cat $target/logs/imgsize.txt)"
               ukuran=$size
               echo -e "$no"
               break ;;
-        "2" ) echo -e ""
+        2) echo -e ""
               read -p "Masukkan ukuran:" size
-              echo -e "Ukuran partisi $ukuran"
+              p "\nUkuran partisi $size"
               ukuran=$size
               echo -e "$no"
               break ;;
-        * ) echo -e ""
-            echo -e "${me}Masukan salah! Mohon coba kembali.${no}"
-            echo -e ""
+        *) echo -e "\n${me}Masukan salah! Mohon coba kembali.${no}\n";;
  esac
 done
 }
@@ -331,7 +325,11 @@ repack() {
 fosys="$target/system"
 if [ -f "$target/file_contexts.bin" ]; then
 bnr;
-echo -e "${ku}Convert file_contexts.bin..."
+p "${ku}Ditemukan${no} file_contexts.bin
+
+${ku}Convert${no} file_contexts.bin ${ku}ke${no} file_contexts
+
+${ku}Mohon tunggu"
 echo -e "$no"
 $fc_con -x $target/file_contexts.bin $target/
 sleep 3
@@ -341,12 +339,12 @@ if [[ -e $fosys && -e $cntx ]]; then
     insert_imgsize;
     bnr;
     info;
-    echo -e "${ku}Membuat raw img..."
+    p "${ku}Membuat raw img..."
     echo -e "$mag"
     $mext -T -0 -S $cntx -L system -l ${ukuran} -a system $target/raw.img $target/system/
     bnr;
     info;
-    echo -e "${ku}Membuat sparse img..."
+    p "${ku}Membuat sparse img..."
     echo -e "$mag"
     $img2s $target/raw.img $target/sparse.img 4096 >$logs/repack_log.txt
     rm -r $target/raw.img
@@ -358,7 +356,7 @@ if [[ -e $fosys && -e $cntx ]]; then
     fi
     bnr;
     info;
-    echo -e "${ku}Membuat DAT file...${no}";
+    p "${ku}Membuat DAT file...${no}";
     echo -e "$mag"
     api="$(cat /sdcard/ADU_Tools/system/build.prop | grep "ro.build.version.sdk" | cut -d"=" -f 2)"
     if [[ $api = "21" ]]; then
@@ -391,13 +389,14 @@ echo -e "$dat_menu_info"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
 brs;
-read env;
+while read env; do
 case $env in
- 1|1) unpack;;
- 2|2) repack;;
- 3|3) main;;
- *) winput;;
+ 1) unpack; break;;
+ 2) repack; break;;
+ 3) main; break;;
+ *) echo -e "${me}Masukan salah!${no}";;
 esac
+done
 }
 menu_lainnya() {
 bnr;
@@ -411,12 +410,13 @@ echo -e "$menu_lainnya_info"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
 brs;
-read env;
+while read env; do
 case $env in
- 1|1) installubuntu;;
- 2|2) main;;
- *) winput;;
+ 1) installubuntu; break;;
+ 2) main; break;;
+ *) echo -e "${me}Masukan salah!${no}";;
 esac
+done
 }
 informasi() {
 bnr;
@@ -439,7 +439,7 @@ Kami sangat berterima kasih untuk berpapun donasi yang diberikan,
   • rendiix: 0812-2514-5217 (hanya menerima dlm bentuk pulsa)
   • ${no}"
 
-echo -e "$informasi_info"
+p "$informasi_info"
 jda;
 main;
 }
@@ -454,14 +454,14 @@ check_update(){
 bnr;
 info;
 brs;
-echo -e "${ku}Memeriksa pembaruan silahkan tunggu...${no}"
+p "${ku}Memeriksa pembaruan silahkan tunggu...${no}"
 newv="$(curl -s curl https://raw.githubusercontent.com/rendiix/ADU_Tools/master/README.md | grep "ADU_Tools V" | cut -d" " -f3 | cut -d"." -f3)"
 curv="$(grep "ADU_Tools V" README.md | cut -d" " -f3 | cut -d"." -f3)"
 if [ -z "$newv" ]; then
 bnr;
 info;
 brs;
-echo -e "${me}Tidak dapat memeriksa pembaruan!${no}"
+p "${me}Tidak dapat memeriksa pembaruan!${no}"
 sleep 2
 main;
 else 
@@ -469,7 +469,7 @@ if [ "$curv" -eq "$newv" ]; then
 bnr;
 info;
 brs;
-echo -e "${hi}Versi $newv sudah yang terbaru${no}"
+p "${hi}Versi $newv sudah yang terbaru${no}"
 sleep 2
 main;
 else
@@ -485,7 +485,7 @@ fi
 }
 update() {
 bnr;
-echo -e "${ku}Memasang pembaruan...$no"
+p "${ku}Memasang pembaruan...$no"
 echo -e "$mag"
 mkdir temp
 wget https://codeload.github.com/rendiix/ADU_Tools/zip/master -O $root/temp/adu.zip
@@ -495,9 +495,9 @@ rm -R $root/temp
 chmod +x *
 chmod +x tools/*
 bnr;
-echo -e "${hi}Install pembaruan selesai...${no}"
+p "${hi}Install pembaruan selesai...${no}"
 echo -e ""
-echo -e "Memulai ulang tools..."
+p "Memulai ulang tools..."
 sleep 4
 exec $root/gk.sh
 }
@@ -532,6 +532,7 @@ update_menu;
     fi
 fi
 }
+
 update_menu() {
 bnr;
 info;
@@ -546,15 +547,16 @@ $update_avail
 echo -e "$update_menu_info"
 echo -e ""
 echo -e "Masukkan pilihan:"
-read env;
+while read env; do
 case $env in
- 1|1) autocheck_update;;
- 2|2) check_update;;
- 3|3) main;;
- 4|4) quit;;
- y|y) update;;
- *) update_menu;;
+ 1) autocheck_update; break;;
+ 2) check_update; break;;
+ 3) main; break;;
+ 4) quit; break;;
+ y) update; break;;
+ *) echo -e "${me}Masukan salah!${no}";;
 esac
+done
 }
 main() {
 bnr;
@@ -569,20 +571,21 @@ maininfo="${tbl}${ku}Menu utama:${no}
 echo -e "$maininfo"
 brs;
 echo -e "${ku}Pilih menu kemudian tekan ENTER:${no}";
-brs;
-read env;
+while read env; do
 case $env in
- 1|1) menu_dat;;
- 2|2) csoon;;
- 3|3) csoon;;
- 4|4) menu_lainnya;;
- 5|5) informasi;;
- 6|6) update_menu;;
- 7|7) quit;;
- *) winput;;
+ 1) menu_dat; break;;
+ 2) csoon; break;;
+ 3) csoon; break;;
+ 4) menu_lainnya; break;;
+ 5) informasi; break;;
+ 6) update_menu; break;;
+ 7) quit; break;;
+ *) echo -e "${me}Masukan salah!${no}";;
 esac
+done
 }
-
+. ./tools/demo -w1
+DEMO_PROMPT=""
 root=$(pwd)
 target="/sdcard/ADU_Tools"
 img2s="$root/tools/img2simg"
@@ -603,14 +606,14 @@ logs="$target/logs"
 auto_update_check="$(cat $root/tools/auto_update)"
 envj() {
 bnr;
-echo -e "${ku}Memasang dependency..."
+p "${ku}Memasang dependency..."
 echo -e "$mag"
 pkg update && pkg upgrade --assume-yes
 pkg install -y python readline coreutils unzip tar file figlet curl wget gnup* grep ncurs* fish p7zip zip pv proot
 echo -e "\n${hi}Selesai..."
 sleep 2
 bnr;
-echo -e "${ku}Memasang repo-pointless..."
+p "${ku}Memasang repo-pointless..."
 echo -e "$mag"
 mkdir $PREFIX/etc/apt/sources.list.d
 echo "deb [trusted=yes] https://its-pointless.github.io/files/ termux extras" > $PREFIX/etc/apt/sources.list.d/pointless.list
@@ -621,7 +624,7 @@ rm pointless.gpg
 echo -e "\n${hi}Selesai..."
 sleep 2
 bnr;
-echo -e "\n${ku}Membuat pintasan ADU_Tools...${no}\n"
+p "\n${ku}Membuat pintasan ADU_Tools...${no}\n"
 launcher="$PREFIX/bin/gkdev"
 cat > $launcher <<- EOM
 #!$PREFIX/bin/bash
@@ -631,7 +634,7 @@ cd $root/
 EOM
 chmod 777 $launcher
 sleep 2
-echo -e "\n${hi}Selesai!\n${no}\n${mag}Selanjutnya anda dapat memulai tools dengan\nmengetikkan${no} gkdev${mag} pada terminal.${no}"
+p "\n${hi}Selesai!\n${no}\n${mag}Selanjutnya anda dapat memulai tools dengan\nmengetikkan${no} gkdev${mag} pada terminal.${no}"
 sleep 5
 }
 if [ -d $target ]; then
