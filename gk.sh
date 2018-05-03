@@ -140,7 +140,7 @@ info;
 brs;
 ubuntud="${hi}Instalasi ubuntu selesai...
 Anda dapat memulai Ubuntu dari start screen
-atau dengan mengetikkan perintah ${mag}startubuntu${no}
+atau dengan mengetikkan perintah ${mag}ubuntu${no}
 ${ku}
 Silahkan restart termux${no}"
 p "$ubuntud"
@@ -219,7 +219,7 @@ echo -e "$no"
 echo -e "${mag}$tgl${no}"
 echo -e "${hi}----------------------------${no}";
 echo -e ""
-startubuntu
+ubuntu
 }
 termux() {
 clear
