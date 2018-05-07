@@ -339,11 +339,13 @@ if [[ -e $fosys && -e $cntx ]]; then
     insert_imgsize;
     bnr;
     info;
+    brs;
     p "${ku}Membuat raw img..."
     echo -e "$mag"
     $mext -T -0 -S $cntx -L system -l ${ukuran} -a system $target/raw.img $target/system/
     bnr;
     info;
+    brs;
     p "${ku}Membuat sparse img..."
     echo -e "$mag"
     $img2s $target/raw.img $target/sparse.img 4096 >$logs/repack_log.txt
@@ -356,6 +358,7 @@ if [[ -e $fosys && -e $cntx ]]; then
     fi
     bnr;
     info;
+    brs;
     p "${ku}Membuat DAT file...${no}";
     echo -e "$mag"
     api="$(cat /sdcard/ADU_Tools/system/build.prop | grep "ro.build.version.sdk" | cut -d"=" -f 2)"
@@ -370,10 +373,16 @@ if [[ -e $fosys && -e $cntx ]]; then
     fi
     echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output
     rm -r $target/sparse.img
+     p "\n${hi}Selesai... file tersimpan di:$no
+
+$target/output"
     sleep 5
     exec $root/gk.sh
 else
-    miss;
+    p "
+${me}Tidak ada file${no} file_contexts/file_contexts.bin ${me}atau folder${no} system"
+    sleep 2
+    menu_dat;
 fi
 }
 menu_dat() {
