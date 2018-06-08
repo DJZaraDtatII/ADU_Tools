@@ -371,7 +371,7 @@ if [[ -e $fosys && -e $cntx ]]; then
 		elif [[ $api -ge "24" ]]; then
 			is="4"
     fi
-    echo $is | $img2d $target/sparse.img /sdcard/ADU_Tools/output
+    $img2d $target/sparse.img -o /sdcard/ADU_Tools/output -v ${is}
     rm -r $target/sparse.img
      p "\n${hi}Selesai... file tersimpan di:$no
 
